@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Link } from 'react-router-dom'
 import Logo from '../images/logo.png'
+import {FaBars} from "react-icons/fa"
+import {AiOutlineClose} from "react-icons/ai"
 
 const Header = () => {
   return (
@@ -16,6 +18,9 @@ const Header = () => {
               <li><Link to="/authors">Authors</Link></li>
               <li><Link to="/logout">Logout</Link></li>
             </ul>
+            <button className="btn nav__toggle-btn">
+              <AiOutlineClose/>
+            </button>
         </div>
     </nav>
   )
