@@ -131,6 +131,14 @@ img {
     object-fit: cover;
 }
 
+.center {
+  text-align: center;
+  margin-top: 5rem;
+  margin-inline: auto;
+  display: block;
+  width: 100%;
+}
+
 /* navigation bar*/
 nav {
   width: 100vw;
