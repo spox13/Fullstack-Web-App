@@ -479,3 +479,102 @@ input, select, textarea {
   display: flex;
   gap: 1rem;
 }
+
+
+/* mobile view*/
+@media screen and (max-width: 800px)  {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  .container {
+    width: var(--container-width-md);
+  }
+
+
+
+
+
+  /* navigation bar */
+  .nav__container {
+    width: var(--container-width-md);
+    position: relative;
+  }
+
+  .nav__menu {
+    position: absolute;
+    flex-direction: column;
+    top: 5rem;
+    right: 0;
+    gap: 0;
+    perspective: 350px;
+  }
+
+  .nav__menu li {
+    width: 100%;
+    box-shadow: -2rem 4rem 4rem rgba(0, 0, 0, 0.26);
+    animation: dropDown 500ms ease forwards;
+    opacity: 0;
+    transform: rotateX(90deg);
+    transform-origin: top;
+  }
+
+  @keyframes dropDown {
+    to {
+      opacity: 1;
+      transform: rotateX(0);
+    }
+  }
+  
+  .nav__menu li:nth-child(2) {
+    animation-delay: 300ms;
+  }
+  
+  .nav__menu li:nth-child(3) {
+    animation-delay: 600ms;
+  }
+  
+  .nav__menu li:nth-child(4) {
+    animation-delay: 900ms;
+  }
+  
+  .nav__menu li a {
+    display: block;
+    background: var(--color-white);
+    padding: 0.85rem 2.5rem;
+  }
+  
+  .nav__toggle-btn {
+    display: inline-block;
+    background: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+
+    /* home */
+  .posts__container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .footer__categories {
+    flex-direction: column;
+  }
+
+
+  /* one post item */
+  .post-detail {
+    width: 100%;
+    background: transparent;
+    padding: 0;
+  }
+}
