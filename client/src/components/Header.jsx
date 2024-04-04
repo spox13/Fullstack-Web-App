@@ -24,11 +24,7 @@ const Header = () => {
               <Link to="/" className='nav__logo' onClick={closeNavHandler}>
                 <img src={Logo} alt="Navbar Logo" />
               </Link>
-              
-              { isNavShowing && <ul className='nav__menu'>
-                  <li><Link to={'/authors'} onClick={closeNavHandler}>Authors</Link></li>
-                  <li><Link to={'/login'} onClick={closeNavHandler}>Login</Link></li>
-              </ul>}
+            
               { isNavShowing && <ul className='nav__menu'>
                   <li><Link to={`/profile/qweqwe`} onClick={closeNavHandler}>Dummy Name</Link></li>
                   <li><Link to={'/create'} onClick={closeNavHandler}>Create Post</Link></li>
