@@ -321,7 +321,7 @@ input, select, textarea {
   margin-bottom: 1rem;
 }
 
-.register, .login {
+.register, .login, .create-post {
   width: var(--form-width);
   margin-inline: auto;
   height: calc(100vh - 12rem);
@@ -329,7 +329,7 @@ input, select, textarea {
   place-items: center;
 }
 
-.register h2, .login h2 {
+.register h2, .login h2, create-post h2 {
   margin-bottom: 2rem;
 }
 
@@ -340,6 +340,12 @@ input, select, textarea {
 
 .register small a, .login small a {
   color: var(--color-primary);
+}
+
+.ql-editor {
+  overflow: scroll;
+  background: var(--color-white);
+  height: 10rem !important;
 }
 
 /* authors view */
