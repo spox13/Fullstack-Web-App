@@ -577,4 +577,41 @@ input, select, textarea {
     background: transparent;
     padding: 0;
   }
+
+
+   .register,
+   .login,
+   .create-post {
+     width: 100%;
+   }
+ 
+   .profile__details h1 {
+     margin-top: 1rem;
+   }
+ 
+   .form.profile__form {
+     margin-top: 2.5rem;
+     width: 100%;
+   }
+ 
+ 
+ 
+   .authors__container {
+     grid-template-columns: 1fr;
+     gap: 1.2rem;
+   }
+ 
+ 
+ 
+   .dashboard__post {
+     flex-direction: column;
+   }
+ 
+   .dashboard__post-info {
+     gap: 1.5rem;
+   }
+ 
+   .dashboard__post-thumbnail {
+     width: 5rem;
+   }
 }
