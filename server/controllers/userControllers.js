@@ -83,6 +83,17 @@ const getUser = async (req, res, next) => {
     }
 }
 
+// author
+// api/users
+const getAuthors = async (req, res, next) => {
+    try {
+        const authors = await User.find().select('-password');
+        res.json(authors);
+    } catch {
+        return next(new HttpError(error))
+    }
+}
+
 // changing avatar
 // api/users/change-avatar
 const changeAvatar = async (req, res, next) => {
@@ -95,10 +106,6 @@ const editUser = async (req, res, next) => {
     res.json("edit user")
 }
 
-// author
-// api/users/authors
-const getAuthors = async (req, res, next) => {
-    res.json("get authors")
-}
+
 
 module.exports = {registerUser, loginUser, getUser, changeAvatar, editUser, getAuthors}
