@@ -3,6 +3,11 @@ const User = require('../models/userModel')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const fs = require('fs')
+const path = require('path')
+
+const {v4: uuid} = require('uuid')
+
 // register
 // api/users/register
 const registerUser = async (req, res, next) => {
@@ -97,7 +102,44 @@ const getAuthors = async (req, res, next) => {
 // changing avatar
 // api/users/change-avatar
 const changeAvatar = async (req, res, next) => {
-    res.json("change avatar")
+    try {
+        if(!req.files.avatar) {
+            return next(new HttpError("Choose an image", 422))
+        }
+
+        const user = await User.findById(req.user.id)
+        
+        if(user.avatar) {
+            fs.unlink(path.join(__dirname, '..', 'uploads', user.avatar), (err) => {
+                if(err) {
+                    return next(new HttpError(err))
+                }
+            })
+        }
+
+        const {avatar} = req.files;
+        if(avatar.size > 500000) {
+            return next(new HttpError("File size is too big", 422))
+        }
+
+        let fileName;
+        fileName = avatar.name;
+        let splittedFilename = fileName.split('.')
+        let newFilename = splittedFilename[0] + uuid() + '.' + splittedFilename[splittedFilename.length - 1]
+        avatar.mv(path.join(__dirname, '..', 'uploads', newFilename), async (err) => {
+            if(err) {
+                return next(new HttpError(err))
+            }
+
+            const updatedAvatar = await User.findByIdAndUpdate(req.user.id, {avatar: newFilename}, {new: true})
+            if(!updatedAvatar) {
+                return next(new HttpError("Avatar can't be changed", 422))
+            }
+            res.status(200).json(updatedAvatar)
+        })
+    } catch (error) {
+        return next(new HttpError(error))
+    }
 }
 
 // edit usera
