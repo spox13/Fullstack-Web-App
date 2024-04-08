@@ -85,7 +85,13 @@ const getCatPosts = async (req, res, next) => {
 // posts of the author
 // api/posts/users/:id
 const getUserPosts = async (req, res, next) => {
-    res.json("user posts")
+    try {
+        const {id} = req.params;
+        const posts = await Post.find({creator: id}).sort({createdAt: -1})
+        res.status(200).json(posts)
+    } catch (error) {
+        return next(new HttpError(error))
+    }
 }
 
 // editing post
