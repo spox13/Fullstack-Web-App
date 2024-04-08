@@ -58,7 +58,16 @@ const getPosts = async (req, res, next) => {
 // get just one post
 // api/posts/:id
 const getPost = async (req, res, next) => {
-    res.json("get just one post")
+    try {
+        const postID = req.params.id;
+        const post = await Post.findById(postID);
+        if(!post) {
+            return next(new HttpError("Post not found.", 404))
+        }
+        res.status(200).json(post);
+    } catch (error) {
+        return next(new HttpError(error));
+    }
 }
 
 // posts by category
