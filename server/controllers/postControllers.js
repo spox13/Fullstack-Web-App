@@ -73,7 +73,13 @@ const getPost = async (req, res, next) => {
 // posts by category
 // api/posts/categories/:category
 const getCatPosts = async (req, res, next) => {
-    res.json("posts by category")
+    try {
+        const {category} = req.params;
+        const catPosts = await Post.find({category}).sort({createdAt: -1})
+        res.status(200).json(catPosts)
+    } catch (error) {
+        return next(new HttpError(error))
+    }
 }
 
 // posts of the author
