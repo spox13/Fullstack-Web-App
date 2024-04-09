@@ -97,7 +97,60 @@ const getUserPosts = async (req, res, next) => {
 // editing post
 // api/posts/:id
 const editPost = async (req, res, next) => {
-    res.json("edit post")
+    try {
+        let fileName;
+        let newFilename;
+        let updatedPost;
+        const postID = req.params.id;
+        let {title, category, description} = req.body;
+
+
+        if(!title || !category || description.length < 12) {
+            return next(new HttpError("Fill all fields", 422))
+        }
+        
+        const oldPost = await Post.findById(postID);
+
+        if(req.user.id == oldPost.creator) {
+
+            if(!req.files) {
+                updatedPost = await Post.findByIdAndUpdate(postID, {title, category, description}, {new: true})
+            } else {
+
+                fs.unlink(path.join(__dirname, '..', 'uploads', oldPost.thumbnail), async (err) => {
+                if (err) {
+                    return next(new HttpError(err))
+                }})
+                
+
+                const {thumbnail} = req.files;
+
+                if(thumbnail.size > 2000000) {
+                    return next(new HttpError("Thumbnail size too big. Should be less than 2mb"))
+                }
+                fileName = thumbnail.name;
+                let splittedFilename = fileName.split('.')
+                newFilename = splittedFilename[0] + uuid() + "." + splittedFilename[splittedFilename.length - 1]
+                thumbnail.mv(path.join(__dirname, '..', 'uploads', newFilename), async (err) => {
+                    if(err) {
+                        return next(new HttpError(err))
+                    }
+                })
+        
+                updatedPost = await Post.findByIdAndUpdate(postID, {title, category, description, thumbnail: newFilename}, {new: true})
+            }
+        } else {
+            return next(new HttpError("Couldn't update post.", 403))
+        }
+
+        if(!updatedPost) {
+            return next(new HttpError("Couldn't update post", 400))
+        }
+        res.status(200).json(updatedPost)
+
+    } catch (error) {
+        return next(new HttpError(error))
+    }
 }
 
 // delete the post
