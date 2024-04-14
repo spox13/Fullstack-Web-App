@@ -19,11 +19,12 @@ import Authors from './pages/Authors';
 import Dashboard from './pages/Dashboard';
 
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import UserProvider from './context/userContext';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout/>,
+    element: <UserProvider><Layout/></UserProvider>,
     errorElement: <ErrorPage/>,
     children: [
       {index: true, element: <Home/>},
