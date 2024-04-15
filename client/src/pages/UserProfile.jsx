@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/userContext'
 import { Link } from 'react-router-dom'
 import {FiEdit} from 'react-icons/fi'
 import {BiCheck} from 'react-icons/bi'
@@ -14,6 +16,17 @@ const UserProfile = () => {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
+
+  const navigate = useNavigate()
+
+  const {currentUser} = useContext(UserContext)
+  const token = currentUser?.token;
+
+  useEffect(() => {
+    if(!token) {
+    navigate('/login')
+    }
+}, [])
 
   return (
     <section className="profile">

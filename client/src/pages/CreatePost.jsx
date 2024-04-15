@@ -1,7 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from "axios"
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+
+import { UserContext } from '../context/userContext';
 
 const CreatePost = () => {
 
@@ -9,6 +13,16 @@ const CreatePost = () => {
   const [category, setCategory] = useState('Uncategorized')
   const [description, setDescription] = useState('')
   const [thumbnail, setThumbnail] = useState('')
+  const navigate = useNavigate()
+
+  const {currentUser} = useContext(UserContext)
+  const token = currentUser?.token;
+
+  useEffect(() => {
+    if(!token) {
+    navigate('/login')
+    }
+}, [])
 
   const modules = {
     toolbar: [
