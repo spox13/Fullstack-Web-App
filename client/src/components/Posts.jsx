@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState} from 'react'
+import axios from 'axios'
 import PostItem from './PostItem'
 
 import Thumbnail1 from '../images/blog1.jpg'
@@ -78,7 +79,22 @@ export const DUMMY_POSTS = [
 ]
 
 const Posts = () => {
-    const [posts, setPosts] = useState(DUMMY_POSTS)
+
+    const [posts, setPosts] = useState([])
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+          try {
+            const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/posts`);
+            setPosts(response?.data)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+    
+        fetchPosts();
+      }, [])
+      
     return (
         <section className="posts">
             {posts.length ? <div className="container posts__container">
