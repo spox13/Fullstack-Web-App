@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PostAuthor from './PostAuthor'
+import DOMPurify from "dompurify";
 
-const PostItem = ({postID, category, title, description, authorID, thumbnail, createdAt}) => {
+const PostItem = ({thumbnail, category, postID, title, description, authorID, createdAt}) => {
 
     const shortDescription = description.length > 145 ? description.substr(0, 145) + '...' : description;
     const postTitle = title.length > 30 ? title.substr(0, 30) + "..." : title;
@@ -10,7 +11,7 @@ const PostItem = ({postID, category, title, description, authorID, thumbnail, cr
     return (
         <article className='post'>
             <div className="post__thumbnail">
-                <img src={thumbnail} alt={title} />
+                <img src={`${process.env.REACT_APP_ASSET_URL}/uploads/${thumbnail}`} alt={title} />
             </div>
             <div className="post__content">
                 <Link to={`/posts/${postID}`}>
