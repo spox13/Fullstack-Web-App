@@ -1,27 +1,51 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, useParams, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import PostAuthor from '../components/PostAuthor'
-import { Link } from 'react-router-dom'
-import Thumbnail from '../images/blog22.jpg'
+import { UserContext } from '../context/userContext'
+import DeletePost from './DeletePost'
+import DOMPurify from "dompurify";
 
 const PostDetail = () => {
+  const {id} = useParams()
+  const [post, setPost] = useState(null);
+  const [error, setError] = useState('')
+  const [creatorID, setCreatorID] = useState(null)
+  const navigate = useNavigate();
+
+  const {currentUser} = useContext(UserContext)
+  const token = currentUser?.token;
+
+  useEffect(() => {
+    const getPost = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/posts/${id}`)
+            setPost(response.data);
+            setCreatorID(response.data.creator)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    getPost();
+}, [])
+
   return (
     <section className="post-detail">
-      <div className="container post-detail__container">
+      {error && <p className='error'>{error}</p>}
+      {post && <div className="container post-detail__container">
         <div className="post-detail__header">
-          <PostAuthor/>
-          <div className="post-detail__buttons">
-            <Link to={`/posts/werwer/edit` } className='btn sm primary'>Edit</Link>
-            <Link to={`/posts/werwer/delete` } className='btn sm danger'>Delete</Link>
-          </div>
+        <PostAuthor authorID={creatorID} createdAt={post?.createdAt} />
+          {currentUser?.id === post?.creator && <div className="post-detail__buttons">
+                <Link to={`/posts/${post?._id}/edit`} className="btn sm primary">Edit</Link>
+                <DeletePost postId={id}/>
+          </div>}
         </div>
-        <h1>This is the post title!</h1>
+        <h1>{post?.title}</h1>
         <div className="post-detail__thumbnail">
-          <img src={Thumbnail} alt="" />
+          <img src={`${process.env.REACT_APP_ASSET_URL}/uploads/${post?.thumbnail}`} alt="" />
         </div>
-        <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos tempora officia molestias optio in asperiores, voluptatem laboriosam quae aliquam explicabo, perspiciatis vel accusantium aliquid deleniti, consequatur unde quas cupiditate quod? Eveniet mollitia totam numquam veritatis corrupti architecto ut, praesentium eligendi.
-        </p>
-      </div>
+        <p dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(post.description)}}/>
+        </div>}
     </section>
 )
 }
