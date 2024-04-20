@@ -16,6 +16,8 @@ app.use(cors({credentials: true, origin: "http://127.0.0.1:3000"}))
 app.use(upload())
 app.use('/uploads', express.static(__dirname + '/uploads'))
 
+{/* TEST */}
+
 app.use('/api/users', userRoutes)
 app.use('/api/posts', postRoutes)
 
