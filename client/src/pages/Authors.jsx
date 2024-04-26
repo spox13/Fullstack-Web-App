@@ -1,59 +1,41 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-import Avatar1 from '../images/avatar1.jpg'
-import Avatar2 from '../images/avatar2.jpg'
-import Avatar3 from '../images/avatar3.jpg'
-import Avatar4 from '../images/avatar4.jpg'
-
-export const DUMMY_AUTHORS = [
-  {
-      id: '1',
-      name: 'John Doe',
-      avatar: Avatar1,
-      posts: 1
-  },
-  {
-      id: '2',
-      name: 'Jane Doe',
-      avatar: Avatar2,
-      posts: 5
-  },
-  {
-      id: '3',
-      name: 'Some Guy',
-      avatar: Avatar3,
-      posts: 3
-  },
-  {
-      id: '4',
-      name: 'Cool Guy',
-      avatar: Avatar4,
-      posts: 8
-  }
-]
+import axios from 'axios'
 
 const Authors = () => {
 
-  const [authors, setAuthors] = useState(DUMMY_AUTHORS)
+    const [authors, setAuthors] = useState([])
 
-  return (
+    useEffect(() => {
+        const getauthors = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users`)
+                setAuthors(response.data);
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        getauthors()
+    }, [])
+
+    return (
     <section className="authors">
         {authors.length ? <div className="container authors__container">
-            {authors.map(({id, name, avatar, posts}) => {
-                return <Link key={id} to={`/posts/users/${id}`} className="author">
+            {authors.map(author => {
+                return <Link key={author?._id} to={`/posts/users/${author?._id}`} className="author">
                 <div className="author__avatar">
-                    <img src={avatar} alt={`Image of ${name}`} />
+                    <img src={`${process.env.REACT_APP_ASSET_URL}/uploads/${author.avatar}`} alt={author?.name} />
                 </div>
                 <div className='author__info'>
-                    <h4>{name}</h4>
-                    <p>{posts} posts</p>
+                    <h4>{author?.name}</h4>
+                    <p>{author?.posts} posts</p>
                 </div>
             </Link>
             })}
-        </div> : <h2 className='center'>No authors found</h2>}
+        </div> : <h2 className='center'>No Authors Found</h2>}
     </section>
-  )
+    )
 }
 
 export default Authors
