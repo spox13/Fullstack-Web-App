@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import axios from "axios"
 
 import { UserContext } from '../context/userContext'
 
@@ -12,7 +13,9 @@ const EditPost = () => {
   const [category, setCategory] = useState('Uncategorized')
   const [description, setDescription] = useState('')
   const [thumbnail, setThumbnail] = useState('')
+  const [error, setError] = useState('')
 
+  const params = useParams()
   const navigate = useNavigate()
 
   const {currentUser} = useContext(UserContext)
@@ -43,14 +46,54 @@ const formats = [
 
 const POST_CATEGORIES = ["Agriculture", "Business", "Education", "Entertainment", "Art", "Investment", "Uncategorized", "Weather"]
 
+  useEffect(() => {
+  const getPost = async () => {
+      try {
+          const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/posts/${params.id}`)
+          setTitle(response?.data.title)
+          setDescription(response?.data.description)
+
+      } catch (error) {
+          console.log(error)
+          navigate('/login')
+      }
+  }
+  getPost();
+  }, [])
+
+  const EditPost = async (e) => {
+    e.preventDefault();
+
+    const postData = new FormData();
+    postData.set('title', title);
+    postData.set('category', category);
+    postData.set('description', description);
+    postData.set('thumbnail', thumbnail)
+
+    try {
+        const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${params.id}`, postData, {withCredentials: true, headers: {Authorization: `Bearer ${token}`}})
+        if(response.status == 200) {
+            return navigate('/')
+        }
+    } catch (err) {
+        if(err.response.data.message) {
+            setError(err.response.data.message);
+        }
+    }
+  }
+
+const changeCat = (newCat) => {
+    setCategory(newCat)
+}
+
   return (
     <section className="create-post">
             <div className="container create-post__container">
                 <h2>Edit Post</h2>
-                <p className="form__error-message">This is an error message!</p>
-                <form className='form create-post__form'>
+                {error && <p className="form__error-message">{error}</p>}
+                <form onSubmit={EditPost} className='form create-post__form' encType="multipart/form-data">
                     <input type="text" placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} />
-                    <select name='category' value={category} onChange={e => setCategory(e.target.value)}>
+                    <select name='category' value={category} onChange={e => changeCat(e.target.value)}>
                         {
                             POST_CATEGORIES.map(cat => <option key={cat}>{cat}</option>)
                         }
