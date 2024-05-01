@@ -1,22 +1,26 @@
-import React, { useContext, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-
-import { UserContext } from '../context/userContext'
+import React, { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import axios from 'axios';
 
 const DeletePost = () => {
-  const navigate = useNavigate()
+    const {id} = useParams;
 
-  const {currentUser} = useContext(UserContext)
-  const token = currentUser?.token;
+    useEffect(() => {
+        const removePost = async () => {
+            try {
+                const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/posts/${id}`)
 
-  useEffect(() => {
-    if(!token) {
-    navigate('/login')
-    }
-}, [])
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        removePost()
+    }, [])
+
 
   return (
-    <Link className='btn sm danger'>Delete</Link>
+    <div></div>
   )
 }
 

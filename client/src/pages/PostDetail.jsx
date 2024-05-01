@@ -27,7 +27,16 @@ const PostDetail = () => {
         }
     }
     getPost();
-}, [])
+  }, [])
+
+  const removePost = async () => {
+    const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/posts/${id}`, {withCredentials: true, headers: {Authorization: `Bearer ${token}`}})
+    if(!response) {
+        setError("couldnt delete post")
+    }
+
+    navigate('/')
+  }
 
   return (
     <section className="post-detail">
@@ -37,7 +46,7 @@ const PostDetail = () => {
         <PostAuthor authorID={creatorID} createdAt={post?.createdAt} />
           {currentUser?.id === post?.creator && <div className="post-detail__buttons">
                 <Link to={`/posts/${post?._id}/edit`} className="btn sm primary">Edit</Link>
-                <DeletePost postId={id}/>
+                <Link className='btn sm danger' onClick={removePost}>Delete</Link>
           </div>}
         </div>
         <h1>{post?.title}</h1>
