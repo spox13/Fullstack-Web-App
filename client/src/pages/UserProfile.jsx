@@ -6,9 +6,11 @@ import {FiEdit} from 'react-icons/fi'
 import {BiCheck} from 'react-icons/bi'
 
 import Avatar from '../images/avatar10.jpg'
+import axios from 'axios'
 
 const UserProfile = () => {
 
+  const [avatarTouched, setAvatarTouched] = useState(false)
   const [avatar, setAvatar] = useState(Avatar)
 
   const [name, setName] = useState('')
@@ -21,12 +23,26 @@ const UserProfile = () => {
 
   const {currentUser} = useContext(UserContext)
   const token = currentUser?.token;
+  const [error, setError] = useState('')
 
   useEffect(() => {
     if(!token) {
     navigate('/login')
     }
 }, [])
+
+    const changeAvatarHandler = async () => {
+    setAvatarTouched(false);
+    try {
+        const postData = new FormData()
+        postData.set('avatar', avatar);
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/users/change-avatar`, postData, {withCredentials: true, headers: {Authorization: `Bearer ${token}`}})
+        setAvatar(response?.data.avatar)
+    } catch (error) {
+        setError(error.response.data.message)
+        console.log(error)
+    }
+    }
 
   return (
     <section className="profile">
@@ -36,17 +52,17 @@ const UserProfile = () => {
             <div className="profile__details">
                 <div className="avatar__wrapper">
                     <div className="profile__avatar">
-                        <img src={avatar} alt="" />
+                    <img src={`${process.env.REACT_APP_ASSET_URL}/uploads/${avatar}`} alt="" />
                     </div>
 
                     <form className='avatar__form'>
                         <input type="file" id='avatar' name='avatar' onChange={e => setAvatar(e.target.files[0])} accept="png, jpg, jpeg" />
-                        <label htmlFor="avatar"><FiEdit/></label>
+                        <label htmlFor="avatar" value={avatarTouched} onClick={() => setAvatarTouched(!avatarTouched)}><FiEdit/></label>
                     </form>
-                    <button type="submit" className='profile__avatar-btn'><BiCheck/></button>
+                    {avatarTouched && <button type="submit" className='profile__avatar-btn' onClick={changeAvatarHandler}><BiCheck/></button>}
                 </div>
 
-                <h1>Dummy Name</h1>
+                <h1>{currentUser.name}</h1>
 
 
                 <form className='form profile__form'>
