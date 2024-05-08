@@ -29,7 +29,18 @@ const UserProfile = () => {
     if(!token) {
     navigate('/login')
     }
-}, [])
+    }, [])  
+
+    useEffect(() => {
+        const getUser = async () => {
+            const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users/${currentUser.id}`, {withCredentials: true, headers: {Authorization: `Bearer ${token}`}})
+            const {name, email, avatar} = response.data
+            setName(name)
+            setEmail(email)
+            setAvatar(avatar)
+        }
+        getUser()
+    }, [])
 
     const changeAvatarHandler = async () => {
     setAvatarTouched(false);
