@@ -55,6 +55,28 @@ const UserProfile = () => {
     }
     }
 
+    const updateUserDetail = async (e) => {
+    try {
+        e.preventDefault()
+        const userData = new FormData()
+        userData.set('name', name)
+        userData.set('email', email)
+        userData.set('currentPassword', currentPassword)
+        userData.set('newPassword', newPassword)
+        userData.set('confirmNewPassword', confirmNewPassword)
+
+        const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/users/edit-user`, userData, {withCredentials: true, headers: {
+            Authorization: `Bearer ${token}`
+        }})
+
+        if(response.status === 200) {
+            navigate('/logout')
+        }
+    } catch (error) {
+        setError(error.response.data.message)
+    }
+    }
+
   return (
     <section className="profile">
         <div className="container profile__container">
@@ -76,8 +98,8 @@ const UserProfile = () => {
                 <h1>{currentUser.name}</h1>
 
 
-                <form className='form profile__form'>
-                    <p className='form__error-message'>This is an error message!</p>
+                <form className='form profile__form' onSubmit={updateUserDetail}>
+                    {error && <p className='form__error-message'>{error}</p>}
                     <input type="text" placeholder='Full Name' value={name} onChange={e => setName(e.target.value)} />
                     <input type="email" placeholder='Email' value={email} onChange={e => setEmail(e.target.value)} />
                     <input type="password" placeholder='Current Password' value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
